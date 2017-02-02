@@ -1,0 +1,38 @@
+group 'org.jwhbridger.gradle-parallel'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+@ParallelizableTask
+class ParallelTask extends JavaExec {
+    @TaskAction
+    @Override
+    void exec() {
+        super.exec()
+    }
+}
+
+task(runSimple1, dependsOn: 'classes', type: ParallelTask) {
+    main = 'com.jwhbridger.Main'
+    args 'runSimple1'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task(runSimple2, dependsOn: 'classes', type: ParallelTask) {
+    main = 'com.jwhbridger.Main'
+    args 'runSimple2'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task runAll (dependsOn: ['runSimple1', 'runSimple2'])
