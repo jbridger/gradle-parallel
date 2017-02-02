@@ -1,1 +1,1 @@
-/gradlew runAll --parallel -Dorg.gradle.parallel.intra=true 
+./gradlew runAll --parallel -Dorg.gradle.parallel.intra=true 
