@@ -15,7 +15,7 @@ dependencies {
 }
 
 @ParallelizableTask
-class ParallelTask extends JavaExec {
+class ParallelJavaExecTask extends JavaExec {
     @TaskAction
     @Override
     void exec() {
@@ -23,16 +23,40 @@ class ParallelTask extends JavaExec {
     }
 }
 
-task(runSimple1, dependsOn: 'classes', type: ParallelTask) {
+task(runJavaExec1, dependsOn: 'classes', type: ParallelJavaExecTask) {
     main = 'com.jwhbridger.Main'
     args 'runSimple1'
     classpath = sourceSets.main.runtimeClasspath
 }
 
-task(runSimple2, dependsOn: 'classes', type: ParallelTask) {
+task(runJavaExec2, dependsOn: 'classes', type: ParallelJavaExecTask) {
     main = 'com.jwhbridger.Main'
     args 'runSimple2'
     classpath = sourceSets.main.runtimeClasspath
+}
+
+task runAllJavaExec (dependsOn: ['runJavaExec1', 'runJavaExec2'])
+
+
+@ParallelizableTask
+class ParallelTask extends DefaultTask {
+    def id;
+
+    @TaskAction
+    void exec() {
+        (1..20).forEach {
+            println "$it - $id"
+            Thread.sleep(500)
+        }
+    }
+}
+
+task(runSimple1, dependsOn: 'classes', type: ParallelTask) {
+    id = 'runSimple1'
+}
+
+task(runSimple2, dependsOn: 'classes', type: ParallelTask) {
+    id = 'runSimple2'
 }
 
 task runAll (dependsOn: ['runSimple1', 'runSimple2'])
